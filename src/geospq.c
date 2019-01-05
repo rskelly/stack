@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 
 	int n;
 	double x, y;
-	n = GEOSGeomGetNumPoints(r);//4;//GEOSCoordSeq_getSize(s, &n);
+	n = GEOSGeomGetNumPoints(r); // ? GEOSCoordSeq_getSize(s, &n);
 	printf("Number of points: %d\n", n);
 	for(int i = 0; i < n; ++i) {
 		GEOSCoordSeq_getX(s, i, &x);
