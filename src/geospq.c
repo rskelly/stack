@@ -1,4 +1,5 @@
 // https://gis.stackexchange.com/questions/307621/postgis-geometry-to-geos-geometry-without-lwgeom-dependency
+// Build with: gcc -I/usr/include/postgresql src/geospq.c -lpq -lgeos_c -o bin/geospq
 
 #include <stdio.h>
 #include <string.h>
@@ -33,6 +34,8 @@ int main(int argc, char** argv) {
 	const unsigned char* geom = PQgetvalue(res, 0, 0);
 	int len = strlen(geom);
 
+	PQfinish(conn);
+
 	printf("Binary string and length: %s %d\n", geom, len);
 
 	initGEOS(&notice, &notice);
@@ -42,12 +45,15 @@ int main(int argc, char** argv) {
 		printf("Failed to create reader.\n");
 		return 1;
 	}
+
 	GEOSGeometry* g = GEOSWKBReader_readHEX(reader, geom, len);
 	if(!g) {
 		printf("Failed to parse binary string.\n");
 		return 1;
 	}
 	
+	GEOSWKBReader_destroy(reader);
+
 	const GEOSGeometry* r = GEOSGetExteriorRing(g);
 	if(!r) {
 		printf("Failed to retrieve exterior ring.\n");
@@ -70,7 +76,8 @@ int main(int argc, char** argv) {
 		printf("Coord %d: %f %f\n", i, x, y);
 	}
 
-	PQfinish(conn);
-
+	GEOSGeom_destroy(g);
+	finishGEOS();
+	
 	return 0;
 }
