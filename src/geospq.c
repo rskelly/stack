@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
-	PGresult* res = PQexec(conn, "SELECT encode(ST_AsBinary(geom), 'hex') FROM test LIMIT 1");
+	PGresult* res = PQexec(conn, "SELECT encode(ST_AsEWKB(geom), 'hex') FROM test LIMIT 1");
 	if(!res) {
 		printf("No result returned.\n");
 		return 1;
